@@ -1,26 +1,37 @@
+const ANDROID_APP_ID = 'br.com.lojaebac';     
+const IOS_BUNDLE_ID = 'br.com.lojaebac';      
+
 let hooksConf = {
-    afterStep: function (test, scenario, { error, duration, passed }) {
-        if (error) {
-            driver.takeScreenshot();
-        }
-    },
-
-    beforeSuite: async function () {
-        // Verifica se o app está rodando. Se não estiver, ativa o app
-        let state = await driver.queryAppState("br.art.ebaconline");
-        if (state !== 4) {
-            await driver.execute("mobile: activateApp", {
-                appId: "br.art.ebaconline"
-            });
-        }
-    },
-
-    afterSuite: async function () {
-        // Fecha o app após a suíte de testes
-        await driver.execute("mobile: terminateApp", {
-            appId: "br.art.ebaconline"
-        });
+  afterStep: function (test, scenario, { error }) {
+    if (error) {
+      driver.takeScreenshot();
     }
+  },
+
+  beforeSuite: async function () {
+    const caps = driver.capabilities;
+    const isIOS = caps.platformName.toLowerCase() === 'ios';
+    const appIdKey = isIOS ? 'bundleId' : 'appId';
+    const appIdentifier = isIOS ? IOS_BUNDLE_ID : ANDROID_APP_ID;
+
+    const state = await driver.queryAppState(appIdentifier);
+    if (state !== 4) {
+      await driver.execute('mobile: activateApp', {
+        [appIdKey]: appIdentifier
+      });
+    }
+  },
+
+  afterSuite: async function () {
+    const caps = driver.capabilities;
+    const isIOS = caps.platformName.toLowerCase() === 'ios';
+    const appIdKey = isIOS ? 'bundleId' : 'appId';
+    const appIdentifier = isIOS ? IOS_BUNDLE_ID : ANDROID_APP_ID;
+
+    await driver.execute('mobile: terminateApp', {
+      [appIdKey]: appIdentifier
+    });
+  }
 };
 
 module.exports = { hooksConf };
