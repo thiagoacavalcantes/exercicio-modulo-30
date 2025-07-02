@@ -5,6 +5,7 @@ const { generalConf } = require('./general.conf')
 let capabilities = process.env.PLATFORM === 'android' ? {
     capabilities: [{
         platformName: "android",
+        "appium:automationName": "UiAutomator2", 
         "appium:app": "storage:filename=ebacshop.aab",
         "appium:deviceName": "Android GoogleAPI Emulator",
         "appium:platformVersion": "14.0",
@@ -14,7 +15,8 @@ let capabilities = process.env.PLATFORM === 'android' ? {
       }]
 } : {
     capabilities: [{
-        platformName: "iOs",
+        platformName: "iOS",
+        "appium:automationName": "XCUITest", 
         "appium:app": "storage:filename=LojaEBAC-sim.zip",
         "appium:deviceName": "iPhone Simulator",
         "appium:platformVersion": "current_major",
